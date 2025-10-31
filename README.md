@@ -28,6 +28,20 @@ runtests('tests/matlab/seed')
 add_one(41)  % -> 42
 ```
 
+## Quick start (MATLAB/FORTRAN carsfit Interface)
+
+1) Build or obtain the binary (See FORTRAN below):
+   `src/fortran/co2_2pump/bin/carsfit_co2`
+
+2) In MATLAB:
+
+```matlab
+addpath(genpath('src/matlab'));
+seq = [repmat("",8,1); "N"; "N"];           % 8 blanks, then N, N
+out = cfx.run_carsfit_script(seq, struct('workdir',"runs/demo1"));
+T = out.tables(out.csv_files{1}); figure; plot(T{:,1}, T{:,2}); grid on;
+```
+
 ## Quick start (FORTRAN)
 ### CO2 / Dual Pump
 ```bash
