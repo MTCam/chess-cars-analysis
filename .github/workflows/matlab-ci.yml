@@ -7,29 +7,62 @@ on:
 
 jobs:
   CARSFT:
-    # Run on Linux; you can add macOS/windows later via a matrix.
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
 
       - name: Set up MATLAB
-        # Uses MathWorks’ official action; 'latest' is fine to start.
         uses: matlab-actions/setup-matlab@v2
 
-      - name: Run MATLAB tests
+      - name: Run CARSFT tests
         uses: matlab-actions/run-tests@v2
         with:
-          # Tell CI where code and tests live (recursive)
-          source-folder: src/matlab
-          select-by-folder: tests/matlab
-          # Optional: publish coverage artifact
+          source-folder: .
+          select-by-folder: tests/matlab/carsft
           code-coverage-cobertura: cobertura.xml
 
       - name: Upload coverage (artifact)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: matlab-cobertura
+          name: matlab-cobertura-carsft
+          path: cobertura.xml
+
+  CFX:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Fortran toolchain (Ubuntu)
+        run: sudo apt-get update && sudo apt-get install -y gfortran make
+
+      - name: Build carsfit_co2
+        run: |
+          set -e
+          make -C src/fortran/co2_2pump
+          test -x src/fortran/co2_2pump/bin/carsfit_co2 || (echo "carsfit_co2 missing"; exit 1)
+          chmod +x src/fortran/co2_2pump/bin/carsfit_co2
+
+      - name: Install Python dependencies for plotter
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install numpy matplotlib
+
+      - name: Set up MATLAB
+        uses: matlab-actions/setup-matlab@v2
+
+      - name: Run CFX tests
+        uses: matlab-actions/run-tests@v2
+        with:
+          source-folder: .
+          select-by-folder: tests/matlab/cfx
+          code-coverage-cobertura: cobertura.xml
+
+      - name: Upload coverage (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: matlab-cobertura-cfx
           path: cobertura.xml
