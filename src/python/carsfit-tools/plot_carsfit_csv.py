@@ -169,7 +169,7 @@ def main():
 
     # Axis labels/title from metadata (best-effort)
     xlabel, ylabel, title = axis_labels_from_meta(metas)
-    print(f"XLABEL:({xlabel}), YLABEL:({ylabel})")
+    # print(f"XLABEL:({xlabel}), YLABEL:({ylabel})")
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     title = None

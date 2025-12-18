@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Directory containing this script
+HERE="$(cd "$(dirname "$(command -v "$0")")" && pwd)"
+
+# Check python
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "plot-carsfit: python3 not found on PATH" >&2
+    exit 1
+fi
+
+# Check matplotlib
+python3 - <<EOF
+import matplotlib
+EOF
+if [ $? -ne 0 ]; then
+    echo "plot-carsfit: matplotlib not available in python3" >&2
+    exit 1
+fi
+
+# Run the real plotter
+exec python3 "${HERE}/plot_carsfit_csv.py" "$@"
