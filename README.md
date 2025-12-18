@@ -58,9 +58,9 @@ You can inspect, and change the `carsft` tests by looking in:
 
 You can inspect, and change `carsft` code by looking in:
 `src/matlab/carsft/src/*.m`
-
+--------------------
 #### 0) Running `carsfit` from within MATLAB
-
+-------------------
 ##### Option 1 - Directly with your own executable
 
 If you have your own executable and inputs, then you can run it directly in MATLAB. If your executable is named `carsfit-3`, for example, and you're in the directory where it is located along with all the required inputs, then you can run it like this:
@@ -70,7 +70,7 @@ system("./carsfit-3")
 ```
 
 This should run `carsfit` interactively with the usual menu interface. Depending on what version of the code runs, it will produce outputs similar to `spec.out` and possibly some plotting data in `pltchi_000X.csv`.  Information on how to use these results using the `cfx` toolkit can be found below.
-
+--------------
 ##### Option 2 - In an interactive loop with your own executable
 
 The `cfx` toolkit includes an interactive loop runner which will run your `carsfit` executable and plot the resulting spectra in a loop.  If you want to run in this loop mode, then run it like this:
@@ -80,7 +80,7 @@ cfx.run_carsfit_exe("./carsfit-3")
 ```
 
 This mode will be interactive and prompt the user for inputs, filenames, and options to keep going or exit. Plots and outputs will optionally be generated interactively.  Outputs can be further processed inside MATLAB with options explained below.
-
+----------------
 ##### Option 3 - Using the built-in MATLAB interface to FORTRAN `carsfit_co2`
 
 To use this, you must first build
@@ -91,13 +91,13 @@ an executable from someone that already has one.
 The following steps should get you up and running with the Matlab interface to the FORTRAN
 code.
 
-1) Build or obtain the binary (See HOWTO build FORTRAN `carsfit_co2` below):
+###### 1) Build or obtain the binary (See HOWTO build FORTRAN `carsfit_co2` below):
 
 The build process (or an executable you otherwise obtain) must be located at and named:
 
 `src/fortran/co2_2pump/bin/carsfit_co2`
 
-2) In MATLAB:
+###### 2) In MATLAB:
 
 ```matlab
 cd ~/CHESS-CARS-ANALYSIS/cars-analysis
@@ -119,7 +119,7 @@ figure; plot(T{:,1}, T{:,2}, 'LineWidth', 1.2); grid on; xlabel('X'); ylabel('Y'
 R = cfx.plot_csv_with_python(fullfile(out.workdir, out.primary_csv));
 disp("PNG saved as " + R.png_out);
 ```
-
+----------------
 #### 1) Spectrum reader: `cfx.read_cars_spectrum`
 This utility is useful for reading the spectra output from the `carsfit` executable which should be found in the working directory where `carsfit` is running.  The user generally specifies the filename interactively, and in this README example we use `spec.out` as an example.
 
