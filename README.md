@@ -154,8 +154,8 @@ title("carsfit spectrum");
 
 ----------
 
-### 2) CSV plot data reader: `cfx.import_plot_csv`
---------------------------------------------------
+### CSV plot data reader: `cfx.import_plot_csv`
+----------------------------------------------
 
 This utility is useful if your version of `carsfit` writes plotting data into CSV files.
 
