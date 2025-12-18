@@ -232,7 +232,8 @@ C -- signature copied from your code
       INTEGER NP, IPL
       REAL X1(*), Y1(*), X2(*), Y2(*)
       CHARACTER*(*) XLAB, YLAB, TITL, LG1, LG2
-      LOGICAL FPLT
+      LOGICAL FPLT, PLOTTER_AVAILABLE
+      EXTERNAL PLOTTER_AVAILABLE
 
       INTEGER I, IOS
       INTEGER LUNCSV, LUNMETA
@@ -285,11 +286,102 @@ C -- tiny sidecar with labels/title/flags (optional but handy)
          CLOSE(LUNMETA)
       ENDIF
 
+      WRITE(*,'(A)') 'Plot data written to: ' // TRIM(FCSV)
+     & // ', ' // TRIM(FMETA)
+
 C -- original code set this during device/menu setup; keep behavior
       FPLT = .FALSE.
+ 
+      IF (plotter_available()) THEN
+         CALL spawn_plotter(FCSV)
+      ELSE
+         WRITE(*,*) 'Plotter utility not available, skipping display.'
+      ENDIF
 
       RETURN
       END
+      
+      logical function is_windows()
+      implicit none
+      character*64 os
+      integer len
+
+      os = ' '
+      call get_environment_variable('OS', os, length=len)
+      if (len .ge. 10) then
+         is_windows = (os(1:10) .eq. 'Windows_NT')
+      else
+         is_windows = .false.
+      endif
+      return
+      end
+ 
+      logical function plotter_available()
+      implicit none
+      integer st
+      character*256 cmd
+      logical is_windows
+      external is_windows
+      integer cmdstat
+      character*256 cmdmsg
+      if (is_windows()) then
+C        Windows: where plot-carsfit (works for .exe/.bat/.cmd on PATH)
+         cmd = 'cmd /c where plot-carsfit >nul 2>&1'
+      else
+C        macOS/Linux: command -v carsfit-plot
+         cmd = 'sh -c "command -v plot-carsfit >/dev/null 2>&1"'
+      endif
+C      write(*,*) 'plotter_available cmd = [', trim(cmd), ']'
+C      call flush(0)
+
+      call execute_command_line(trim(cmd), wait=.true., exitstat=st,
+     &                          cmdstat=cmdstat, cmdmsg=cmdmsg)
+
+      if (cmdstat .ne. 0) then
+C         write(0,'(A,I0,2A)') 'plotter_available: cmdstat=',
+C     &                        cmdstat, ' msg=', trim(cmdmsg)
+C         call flush(0)
+         plotter_available = .false.
+         return
+      endif
+C      call execute_command_line(trim(cmd), wait=.true., exitstat=st)
+      plotter_available = (st .eq. 0)
+      return
+      end
+
+      subroutine spawn_plotter(csvname)
+      implicit none
+      character*(*) csvname
+      character*1024 cmd
+      logical is_windows
+      external is_windows
+
+      if (is_windows()) then
+C        Windows: start launches without blocking. /B = no new window.
+C        Quotes: start requires a window title argument (""), then the command.
+         cmd = 'cmd /c start "" /B plot-carsfit "'//trim(csvname)//'"'
+      else
+C        macOS/Linux: background with &, silence output
+         cmd = 'sh -c "plot-carsfit "'//trim(csvname)//'"
+     & >/dev/null 2>&1 &"'
+      endif
+
+      call execute_command_line(cmd)
+      return
+      end
+
+      subroutine spawn_plot_py(python, script, csv)
+      implicit none
+      character(len=*), intent(in) :: python, script, csv
+      character(len=:), allocatable :: cmd
+      
+      cmd = trim(python) // ' "' // trim(script) // '" "' // trim(csv) // '" '
+
+      write(*,'(A)') 'Executing command:' // cmd
+
+      call execute_command_line(cmd, wait=.false.)
+      end subroutine
+
       SUBROUTINE PLRES (CHI, DAT, DATNAM, IPLTYP, ITASK, ITITLE,
      1    NP, PRBFIL, VARFIT, VARRUN, W)
 C

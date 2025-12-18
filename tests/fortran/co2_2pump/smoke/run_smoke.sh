@@ -83,6 +83,9 @@ fi
 if ! [[ -s "$RUN_DIR/stdout.log" ]]; then
   echo "[co2-smoke] FAIL: Didn't make any output (i.e. empty stdout)."
   exit 1
+else
+    echo "[co2-smoke] STDOUT: "
+    cat ${RUN_DIR}/stdout.log
 fi
 if [[ -f "$RUN_DIR/stderr.log" ]] && grep -Eiq 'segmentation|floating|stack|abort|error' "$RUN_DIR/stderr.log"; then
   echo "[co2-smoke] FAIL: runtime errors. Error output from stderr:"
