@@ -19,7 +19,10 @@ MATLAB & Fortran analysis tooling for cars data.
 - `tests/matlab/cfx` - Tests of the interface to Fortran carsfit (CO2/2pump)
 - `tests/fortran/co2_2pump` - Tests for the CO2/dual pump code
 
+------------------
+
 ## Using the CARS Analysis Suite
+
 
 ### Get the code:
 
@@ -33,6 +36,8 @@ git clone https://github.com/chess-uiuc/cars-analysis
 cd cars-analysis
 ```
 
+-----------------------
+
 ### How to use the Matlab code
 
 Do the following inside of `Matlab`:
@@ -45,14 +50,16 @@ cd ~/CHESS-CARS-ANALYSIS/cars-analysis
 addpath(genpath('src/matlab'))
 
 % Run the full MATLAB test suite
-runtests('tests/matlab')
-
-% Or just test the seed example:
-runtests('tests/matlab/seed')
-
-% Run the seed example by hand:
-add_one(41)  % -> 42
+runtests('tests/matlab/carsft')
 ```
+
+You can inspect, and change the `carsft` tests by looking in:
+`tests/matlab/carsft/*.m`
+
+You can inspect, and change `carsft` code by looking in:
+`src/matlab/carsft/src/*.m`
+
+--------------------------
 
 ### How to use the FORTRAN `carsfit_co2`
 
@@ -73,14 +80,23 @@ echo $FC
 If none of those commands indicate you have a FORTRAN compiler
 then try the following:
 
-  - MAC: `brew install gcc`
-  - Ubuntu Linux: `aptget install gcc`
-  - Windows: (Install GCC)
+  - MAC: `brew install gcc` ([More details](https://www.google.com/search?q=install+gfortran+on+mac))
+  - Ubuntu Linux: `aptget install gcc` ([Other Linux](https://www.google.com/search?q=install+gfortran+on+linux))
+  - Windows: ([Try this](https://www.google.com/search?q=how+to+install+gcc+on+windows&oq=how+to+install+gcc+on+windows))
 
-1) Build the `carsft` executable from FORTRAN code
+[Here's some more information about installing a FORTRAN compiler on different systems.](https://fortran-lang.org/learn/os_setup/install_gfortran/)
+
+1) Build the `carsfit_co2` executable from FORTRAN code
+
+This command **builds** the executable:
 
 ```bash
-make -C src/fortran/co2_2pump -j
+make -C src/fortran/co2_2pump
+```
+
+Then this command runs some tests to make sure it "works":
+
+```bash
 tests/fortran/co2_2pump/smoke/run_smoke.sh
 ```
 
@@ -122,16 +138,35 @@ reads the meta data file for the axis labels, if it exists.
 python ../../../python/carsfit-tools/plot_carsfit_csv.py pltchi_0001.csv
 ```
 
-### How to use the Matlab interface to FORTRAN `carsft`
+If you do not have `python` on your system, here is some info about how
+to install python on [Mac](https://www.google.com/search?q=install+python+on+mac), [Linux](https://www.google.com/search?q=install+python+on+linux), and [Windows](https://www.google.com/search?q=install+python+on+windows).
 
-1) Build or obtain the binary (See HOWTO build FORTRAN `carsft` above):
-   `src/fortran/co2_2pump/bin/carsfit_co2`
+----------------------------------
+
+### How to use the Matlab interface to FORTRAN `carsfit_co2`
+
+The Matlab interface to the FORTRAN code is called `cfx`. To use it, you must first build
+or obtain the binary `carsfit_co2` executable for your particular platform. If you have a
+FORTRAN compiler, the instructions above can help you build it.  Otherwise, you must obtain
+an executable from someone that already has one.
+
+The following steps should get you up and running with the Matlab interface to the FORTRAN
+code.
+
+1) Build or obtain the binary (See HOWTO build FORTRAN `carsfit_co2` above):
+
+The build process (or an executable you otherwise obtain) must be located at and named:
+
+`src/fortran/co2_2pump/bin/carsfit_co2`
 
 2) In MATLAB:
 
 ```matlab
 % If you didnt already do this, add the matlab path
 addpath(genpath('src/matlab'));
+
+% Optional: run the cfx+ tests
+runtests('tests/matlab/cfx')
 
 % Run carsfit_co2 from MATLAB (8 Enters, then N, N)
 seq = [repmat("",8,1); "N"; "N"];
