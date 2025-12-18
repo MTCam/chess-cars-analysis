@@ -21,9 +21,7 @@ MATLAB & Fortran analysis tooling for cars data.
 
 ------------------
 
-## Using the CARS Analysis Suite
-
-### Get the code:
+## Get the code:
 
 Obtain the suite of CARS analysis tools with the following command
 from your terminal:
@@ -37,7 +35,8 @@ cd cars-analysis
 
 -----------------------
 
-### MATLAB Utilities (`cfx` toolkit)
+## Set up the MATLAB Utilities (`cfx` toolkit)
+----------------------------------------------
 
 This repository includes a small set of MATLAB utilities under `src/matlab/+cfx/` to make it easy to run `carsfit`, ingest its outputs, and plot results in MATLAB.  To use the `cfx` toolkit, it needs to be added to the MATLAB path. If you want to use the `cfx` toolkit, then after getting the code as above, you can set up the `cfx` toolkit by doing the following inside MATLAB:
 
@@ -61,10 +60,10 @@ You can inspect, and change `carsft` code by looking in:
 
 --------------------
 
-#### 0) Running `carsfit` from within MATLAB
--------------------
+### Running `carsfit` from within MATLAB
+----------------------------------------
 
-##### Option 1 - Directly with your own executable
+#### Option 1 - Directly with your own executable
 
 If you have your own executable and inputs, then you can run it directly in MATLAB. If your executable is named `carsfit-3`, for example, and you're in the directory where it is located along with all the required inputs, then you can run it like this:
 
@@ -76,7 +75,7 @@ This should run `carsfit` interactively with the usual menu interface. Depending
 
 --------------
 
-##### Option 2 - In an interactive loop with your own executable
+#### Option 2 - In an interactive loop with your own executable
 
 The `cfx` toolkit includes an interactive loop runner which will run your `carsfit` executable and plot the resulting spectra in a loop.  If you want to run in this loop mode, then run it like this:
 
@@ -88,7 +87,7 @@ This mode will be interactive and prompt the user for inputs, filenames, and opt
 
 ----------------
 
-##### Option 3 - Using the built-in MATLAB interface to FORTRAN `carsfit_co2`
+#### Option 3 - Using the built-in MATLAB interface to FORTRAN `carsfit_co2`
 
 To use this, you must first build
 or obtain the binary `carsfit_co2` executable for your particular platform. If you have a
@@ -98,13 +97,13 @@ an executable from someone that already has one.
 The following steps should get you up and running with the Matlab interface to the FORTRAN
 code.
 
-###### 1) Build or obtain the binary (See HOWTO build FORTRAN `carsfit_co2` below):
+1) Build or obtain the binary (See HOWTO build FORTRAN `carsfit_co2` below):
 
 The build process (or an executable you otherwise obtain) must be located at and named:
 
 `src/fortran/co2_2pump/bin/carsfit_co2`
 
-###### 2) In MATLAB:
+2) In MATLAB:
 
 ```matlab
 cd ~/CHESS-CARS-ANALYSIS/cars-analysis
@@ -126,10 +125,11 @@ figure; plot(T{:,1}, T{:,2}, 'LineWidth', 1.2); grid on; xlabel('X'); ylabel('Y'
 R = cfx.plot_csv_with_python(fullfile(out.workdir, out.primary_csv));
 disp("PNG saved as " + R.png_out);
 ```
+
 ----------------
 
-#### 1) Spectrum reader: `cfx.read_cars_spectrum`
---------
+### Spectrum reader: `cfx.read_cars_spectrum`
+---------------------------------------------
 
 This utility is useful for reading the spectra output from the `carsfit` executable which should be found in the working directory where `carsfit` is running.  The user generally specifies the filename interactively, and in this README example we use `spec.out` as an example.
 
@@ -154,8 +154,8 @@ title("carsfit spectrum");
 
 ----------
 
-#### 2) CSV plot data reader: `cfx.import_plot_csv`
------------
+### 2) CSV plot data reader: `cfx.import_plot_csv`
+--------------------------------------------------
 
 This utility is useful if your version of `carsfit` writes plotting data into CSV files.
 
@@ -189,7 +189,7 @@ if isfield(R.meta, "title"),  title(R.meta.title);   end
 --------------------------
 
 ### How to use the FORTRAN `carsfit_co2`
------------
+----------------------------------------
 
 0) You need a FORTRAN compiler to build `carsfit_co2`
 
